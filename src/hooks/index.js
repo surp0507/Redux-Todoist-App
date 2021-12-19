@@ -1,8 +1,10 @@
-/* eslint-disable no-nested-ternary */
+
 import { useState, useEffect } from 'react';
 import moment from 'moment';
 import { firebase } from '../firebase';
 import { collatedTasksExist } from '../helpers';
+import { useSelector,useDispatch } from 'react-redux';
+import { setProjects } from '../Redux/action';
 
 export const useTasks = selectedProject => {
   const [tasks, setTasks] = useState([]);
@@ -12,7 +14,8 @@ export const useTasks = selectedProject => {
     let unsubscribe = firebase
       .firestore()
       .collection('tasks')
-      .where('userId', '==', 'jlIFXIwyAL3tzHMtzRbw');
+      .where('userId', '==', 'OnkrJQ69kDr4y61y9jBm');
+      
 
     unsubscribe =
       selectedProject && !collatedTasksExist(selectedProject)
@@ -52,13 +55,15 @@ export const useTasks = selectedProject => {
 };
 
 export const useProjects = () => {
-  const [projects, setProjects] = useState([]);
+  const projects=useSelector(state=>state.projectsReducer.projects)
+  console.log(projects)
+ const dispatch=useDispatch();
 
   useEffect(() => {
     firebase
       .firestore()
       .collection('projects')
-      .where('userId', '==', 'jlIFXIwyAL3tzHMtzRbw')
+      .where('userId', '==', '8jWwCW2a0InVkZR7X9NC')
       .orderBy('projectId')
       .get()
       .then(snapshot => {
@@ -68,10 +73,10 @@ export const useProjects = () => {
         }));
 
         if (JSON.stringify(allProjects) !== JSON.stringify(projects)) {
-          setProjects(allProjects);
+          dispatch(setProjects(allProjects));
         }
       });
   }, [projects]);
 
-  return { projects, setProjects };
+ return {projects,setProjects}
 };

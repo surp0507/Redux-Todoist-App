@@ -1,23 +1,31 @@
 import React, { useState } from 'react';
 import { FaTrashAlt } from 'react-icons/fa';
+import {Modal,Button} from 'react-bootstrap'
+import {setShowModal} from '../Redux/action/index'
+import { setSelectedProject } from '../Redux/action/index';
 import PropTypes from 'prop-types';
-import { useProjectsValue, useSelectedProjectValue } from '../context';
+import { useSelector,useDispatch } from 'react-redux';
 import { firebase } from '../firebase';
 
 export const IndividualProject = ({ project }) => {
-  const [showConfirm, setShowConfirm] = useState(false);
-  const { projects, setProjects } = useProjectsValue();
-  const { setSelectedProject } = useSelectedProjectValue();
+
+const showmodal=useSelector(state=>state.indivisualProjectReducer.showmodal);
+const dispatch=useDispatch()
+  const handleClose = () => dispatch(setShowModal(false));
+  const handleShow = () => dispatch(setShowModal(true));
+  const projects=useSelector(state=>state.projectsReducer.projects)
+
 
   const deleteProject = (docId) => {
+    alert("successfully Deleted");
     firebase
       .firestore()
       .collection('projects')
       .doc(docId)
       .delete()
       .then(() => {
-        setProjects([...projects]);
-        setSelectedProject('INBOX');
+        dispatch(setProjects([...projects]));
+        dispatch(setSelectedProject('INBOX'));
       });
   };
 
@@ -25,43 +33,30 @@ export const IndividualProject = ({ project }) => {
     <>
       <span className="sidebar__dot">•</span>
       <span className="sidebar__project-name">{project.name}</span>
-      <span
-        className="sidebar__project-delete"
-        data-testid="delete-project"
-        onClick={() => setShowConfirm(!showConfirm)}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter') setShowConfirm(!showConfirm);
-        }}
-        tabIndex={0}
-        role="button"
-        aria-label="Confirm deletion of project"
-      >
+      <span onClick={handleShow}>
         <FaTrashAlt />
-        {showConfirm && (
-          <div className="project-delete-modal">
-            <div className="project-delete-modal__inner">
-              <p>Are you sure you want to delete this project?</p>
-              <button
-                type="button"
-                onClick={() => deleteProject(project.docId)}
-              >
-                Delete
-              </button>
-              <span
-                onClick={() => setShowConfirm(!showConfirm)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') setShowConfirm(!showConfirm);
-                }}
-                tabIndex={0}
-                role="button"
-                aria-label="Cancel adding project, do not delete"
-              >
-                Cancel
-              </span>
-            </div>
-          </div>
-        )}
       </span>
+    
+
+      <Modal
+        show={showmodal}
+        onHide={handleClose}
+        backdrop="static"
+        keyboard={false}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title></Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+        <li>Are you sure you want to delete</li>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            cancel
+          </Button>
+          <Button variant="primary" onClick={()=>deleteProject(project.docId)}>Delete</Button>
+        </Modal.Footer>
+      </Modal>
     </>
   );
 };

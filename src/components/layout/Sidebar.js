@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import { useSelector,useDispatch } from 'react-redux';
+import { setActive,setShowProjects } from '../../Redux/action';
 import {
   FaChevronDown,
   FaInbox,
@@ -6,13 +7,14 @@ import {
   FaRegCalendar,
 } from 'react-icons/fa';
 import { Projects } from '../Projects';
-import { useSelectedProjectValue } from '../../context';
 import { AddProject } from '../AddProject';
+import { setSelectedProject } from '../../Redux/action';
 
 export const Sidebar = () => {
-  const { setSelectedProject } = useSelectedProjectValue();
-  const [active, setActive] = useState('inbox');
-  const [showProjects, setShowProjects] = useState(true);
+
+  const active=useSelector(state=>state.sidebarReducer.active)
+  const showProjects=useSelector(state=>state.sidebarReducer.showProjects)
+  const dispatch=useDispatch()
 
   return (
     <div className="sidebar" data-testid="sidebar">
@@ -27,13 +29,13 @@ export const Sidebar = () => {
             tabIndex={0}
             role="button"
             onClick={() => {
-              setActive('inbox');
-              setSelectedProject('INBOX');
+              dispatch(setActive('inbox'));
+              dispatch(setSelectedProject('INBOX'));
             }}
             onKeyDown={(e) => {
               if (e.key === 'Enter') {
-                setActive('inbox');
-                setSelectedProject('INBOX');
+                dispatch(setActive('inbox'));
+                dispatch(setSelectedProject('INBOX'));
               }
             }}
           >
@@ -53,13 +55,13 @@ export const Sidebar = () => {
             tabIndex={0}
             role="button"
             onClick={() => {
-              setActive('today');
-              setSelectedProject('TODAY');
+              dispatch(setActive('today'));
+              dispatch(setSelectedProject('TODAY'));
             }}
             onKeyDown={(e) => {
               if (e.key === 'Enter') {
-                setActive('today');
-                setSelectedProject('TODAY');
+                dispatch(setActive('today'));
+                dispatch(setSelectedProject('TODAY'));
               }
             }}
           >
@@ -79,13 +81,13 @@ export const Sidebar = () => {
             tabIndex={0}
             role="button"
             onClick={() => {
-              setActive('next_7');
-              setSelectedProject('NEXT_7');
+              dispatch(setActive('next_7'));
+              dispatch(setSelectedProject('NEXT_7'));
             }}
             onKeyDown={(e) => {
               if (e.key === 'Enter') {
-                setActive('next_7');
-                setSelectedProject('NEXT_7');
+                dispatch(setActive('next_7'));
+                dispatch(setSelectedProject('NEXT_7'));
               }
             }}
           >
@@ -99,16 +101,16 @@ export const Sidebar = () => {
       <div
         className="sidebar__middle"
         aria-label="Show/hide projects"
-        onClick={() => setShowProjects(!showProjects)}
+        onClick={() => dispatch(setShowProjects(!showProjects))}
         onKeyDown={(e) => {
-          if (e.key === 'Enter') setShowProjects(!showProjects);
+          if (e.key === 'Enter') dispatch(setShowProjects(!showProjects));
         }}
         role="button"
         tabIndex={0}
       >
         <span>
           <FaChevronDown
-            className={!showProjects ? 'hidden-projects' : undefined}
+            className={!showProjects? 'hidden-projects' : undefined}
           />
         </span>
         <h2>Projects</h2>

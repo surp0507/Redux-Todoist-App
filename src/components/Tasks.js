@@ -4,11 +4,13 @@ import { AddTask } from './AddTask';
 import { useTasks } from '../hooks';
 import { collatedTasks } from '../constants';
 import { getTitle, getCollatedTitle, collatedTasksExist } from '../helpers';
-import { useSelectedProjectValue, useProjectsValue } from '../context';
+import { useSelector } from 'react-redux';
+
+
 
 export const Tasks = () => {
-  const { selectedProject } = useSelectedProjectValue();
-  const { projects } = useProjectsValue();
+  const selectedProject=useSelector(state=>state.projectsReducer.selectedProject)
+  const projects=useSelector(state=>state.projectsReducer.projects)
   const { tasks } = useTasks(selectedProject);
 
   let projectName = '';
@@ -28,7 +30,7 @@ export const Tasks = () => {
 
   useEffect(() => {
     document.title = `${projectName}: Todoist`;
-  });
+  }); 
 
   return (
     <div className="tasks" data-testid="tasks">

@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { FaPizzaSlice } from 'react-icons/fa';
 import PropTypes from 'prop-types';
+import { useSelector,useDispatch } from 'react-redux';
 import { AddTask } from '../AddTask';
+import {setShowQuickAddTask} from '../../Redux/action'
 
 export const Header = ({ darkMode, setDarkMode }) => {
-  const [shouldShowMain, setShouldShowMain] = useState(false);
-  const [showQuickAddTask, setShowQuickAddTask] = useState(false);
+  const showQuickAddTask=useSelector(state=>state.headerReducer.showQuickAddTask)
+  const dispatch=useDispatch()
 
   return (
     <header className="header" data-testid="header">
@@ -21,8 +23,7 @@ export const Header = ({ darkMode, setDarkMode }) => {
                 aria-label="Quick add task"
                 type="button"
                 onClick={() => {
-                  setShowQuickAddTask(true);
-                  setShouldShowMain(true);
+                  dispatch(setShowQuickAddTask(true));
                 }}
               >
                 +
@@ -41,14 +42,7 @@ export const Header = ({ darkMode, setDarkMode }) => {
           </ul>
         </div>
       </nav>
-
-      <AddTask
-        showAddTaskMain={false}
-        shouldShowMain={shouldShowMain}
-        showQuickAddTask={showQuickAddTask}
-        setShowQuickAddTask={setShowQuickAddTask}
-      />
-    </header>
+  </header>
   );
 };
 

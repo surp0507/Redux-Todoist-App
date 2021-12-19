@@ -1,13 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { useProjectsValue } from '../context';
+import { useSelector,useDispatch } from 'react-redux';
+import { setShowProjectOverlay,setProject } from '../Redux/action';
 
-export const ProjectOverlay = ({
-  setProject,
-  showProjectOverlay,
-  setShowProjectOverlay,
-}) => {
-  const { projects } = useProjectsValue();
+export const ProjectOverlay = () => {
+
+  const showProjectOverlay=useSelector(state=>state.addTaskReducer.showProjectOverlay);
+  const dispatch=useDispatch();
+  const projects=useSelector(state=>state.projectsReducer.projects);
 
   return (
     projects &&
@@ -19,13 +19,13 @@ export const ProjectOverlay = ({
               <div
                 data-testid="project-overlay-action"
                 onClick={() => {
-                  setProject(project.projectId);
-                  setShowProjectOverlay(false);
+                  dispatch(setProject(project.projectId));
+                  dispatch(setShowProjectOverlay(false));
                 }}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') {
-                    setProject(project.projectId);
-                    setShowProjectOverlay(false);
+                    dispatch(setProject(project.projectId));
+                    dispatch(setShowProjectOverlay(false));
                   }
                 }}
                 role="button"
